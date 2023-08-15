@@ -56,4 +56,14 @@ router.post('/devicecmd', (req, res) => {
     return res.send("OK")
 });
 
+router.all('*', (req, res) => {
+    logger.info('all');
+    logger.info(JSON.stringify(req.query, null, 2));
+    logger.info(JSON.stringify(req.body, null, 2));
+    return res.send("OK")
+});
+
+
+
+
 module.exports = router;
