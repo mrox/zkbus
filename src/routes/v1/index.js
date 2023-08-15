@@ -2,6 +2,7 @@ const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
+const deviceRoute = require('./device.route');
 const zkRoute = require('./zk.route');
 const config = require('../../config/config');
 
@@ -20,6 +21,10 @@ const defaultRoutes = [
     path: '/iclock',
     route: zkRoute,
   },
+  {
+    path: '/devices',
+    route: deviceRoute
+  }
 ];
 
 const devRoutes = [
