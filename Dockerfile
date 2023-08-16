@@ -1,6 +1,6 @@
 FROM node:alpine
 
-RUN mkdir -p /usr/src/node-app && chown -R node:node /usr/src/node-app
+RUN mkdir -p /usr/src/node-app 
 
 WORKDIR /usr/src/node-app
 
@@ -12,7 +12,5 @@ RUN yarn install --pure-lockfile
 
 RUN npm install pm2 -g
 
-
-COPY --chown=node:node . .
 
 EXPOSE 3000
