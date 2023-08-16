@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/usr/src/node-app
     container_name: node-app-prod
-    command: yarn run
+    command: yarn run:prod
     networks:
       - node-network
 
