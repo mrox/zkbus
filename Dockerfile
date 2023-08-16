@@ -10,6 +10,9 @@ USER node
 
 RUN yarn install --pure-lockfile
 
+RUN npm install pm2 -g
+
+
 COPY --chown=node:node . .
 
 EXPOSE 3000
