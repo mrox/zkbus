@@ -10,8 +10,7 @@ services:
       - '3001:3000'
     depends_on:
       - mongodb
-    volumes:
-      - .:/usr/src/node-app
+  
     container_name: node-app-prod
     command: yarn start
     networks:
