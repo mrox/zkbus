@@ -1,6 +1,6 @@
 const winston = require('winston');
 const config = require('./config');
-
+const moment = require('moment-timezone');
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {
     Object.assign(info, { message: info.stack });
@@ -14,7 +14,7 @@ const logger = winston.createLogger({
     enumerateErrorFormat(),
     config.env === 'development' ? winston.format.colorize() : winston.format.uncolorize(),
     winston.format.splat(),
-    winston.format.printf(({ level, message }) => `${level}: ${message}`)
+    winston.format.printf(({ level, message }) => `[${moment().tz("Asia/Ho_Chi_Minh").format("HH:mm:ss")}] ${level}: ${message}`)
   ),
   transports: [
     new winston.transports.Console({

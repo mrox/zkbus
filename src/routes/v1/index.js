@@ -3,6 +3,8 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const deviceRoute = require('./device.route');
+const historyRoute = require('./history.route');
+
 const zkRoute = require('./zk.route');
 const config = require('../../config/config');
 
@@ -10,11 +12,11 @@ const router = express.Router();
 
 const defaultRoutes = [
   {
-    path: '/auth',
+    path: '/api/auth',
     route: authRoute,
   },
   {
-    path: '/users',
+    path: '/api/users',
     route: userRoute,
   },
   {
@@ -22,8 +24,12 @@ const defaultRoutes = [
     route: zkRoute,
   },
   {
-    path: '/devices',
+    path: '/api/devices',
     route: deviceRoute
+  },
+  {
+    path: '/api/histories',
+    route: historyRoute
   }
 ];
 

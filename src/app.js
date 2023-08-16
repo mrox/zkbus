@@ -4,8 +4,7 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const cors = require('cors');
-const bodyParser = require('body-parser')
-
+const path = require('path');
 const passport = require('passport');
 const httpStatus = require('http-status');
 const config = require('./config/config');
@@ -57,6 +56,17 @@ if (config.env === 'production') {
 
 // v1 api routes
 app.use('/', routes);
+
+
+// Have Node serve the files for our built React app
+app.use(express.static(path.resolve(__dirname, '../dist')));
+
+
+// All other GET requests not handled before will return our React app
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
+});
+
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {

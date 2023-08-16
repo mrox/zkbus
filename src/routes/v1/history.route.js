@@ -1,16 +1,13 @@
 const express = require('express');
 
-const deviceController = require('../../controllers/device.controller');
+const historyController = require('../../controllers/history.controller');
 
 const router = express.Router();
 
 router
   .route('/')
   // .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get( deviceController.getDevices);
+  .get( historyController.getHistories);
 
-router
-  .route('/:deviceId/register')
-  .post(deviceController.updateUser)
 
 module.exports = router;

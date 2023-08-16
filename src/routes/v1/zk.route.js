@@ -17,7 +17,7 @@ router.use(bodyParser.text({type:"*/*", limit: "500mb"}))
 router.get('/cdata', (req, res) => {
     const {SN, options, language, pushver} = req.query;
     if(options === "all"){
-        const cmd =  `GET OPTION FROM: ${SN}\nTransFlag=101111111101\nTimeZone=7\nRealtime=1`
+        const cmd =  `GET OPTION FROM: ${SN}\nTransFlag=101111111101\nTimeZone=7\nRealtime=1\nTransInterval=3\nAccessRuleType=0\nDeviceType=att`
         return res.send(cmd)
     }
     logger.info(JSON.stringify(req.query, null, 2));
@@ -64,7 +64,6 @@ router.post('/cdata', async (req, res) => {
     return res.send("OK")
 });
 
-let sendNewcmd = false;
 
 router.get('/getrequest', async (req, res) => {
     logger.info('getrequest');
@@ -92,21 +91,42 @@ router.get('/getrequest', async (req, res) => {
         return res.send("OK")
     }
 
-    if (!sendNewcmd) {
-        logger.info('-------------sendNewcmd-----------');
-        // sendNewcmd = true;
-
-        // logger.info('sendNewcmd');
-        // const cmd = `C:${"123456789723241"}:DATA UPDATE USERINFO PIN=${"112"}\tName=${"Tuyen Tran Trung"}\tPri=${0}\tCard=12345678`
-        return res.send("OK");
+    if(global.commands.has(req.query.SN)){
+        const cmd = global.commands.get(req.query.SN);
+        global.commands.delete(req.query.SN);
+        logger.info('-------------getrequest-----------');
+        logger.info(cmd.slice(0, 100));
+        logger.info('-------------end getrequest-----------');
+        return res.send(cmd);
     }
     else {
-        logger.info('-------------sendNewcmd-----------');
-
-        // \tPasswd=${XXX}${HT}Card=${XXX}${HT}Grp=${XXX}${HT}TZ=${XXX}${HT}Verify=${XXX}${HT}ViceCard=${XXX}`
-
         return res.send("OK")
     }
+    // if (!sendNewcmd) {
+    //     logger.info('-------------sendNewcmd-----------');
+    //     sendNewcmd = true;
+
+    //     // logger.info('sendNewcmd');
+    //     // const cmd = `C:${"123456789723241"}:DATA UPDATE USERINFO PIN=${"112"}\tName=${"Tuyen Tran Trung"}\tPri=${0}\tCard=12345678`
+    //     // const cmd = `C:${"123"}:DATA UPDATE USERINFO PIN=${"113"}\tName=${"Tuyen Tran Trung"}\tPri=${0}`
+
+    //     // const cmd = "C:1222:ENROLL_BIO TYPE=2\tPIN=112\tCardNo=12345678\tRETRY=1\tOVERWRITE=1"
+    //     // const cmd =`C:${"12333"}:ENROLL_FP PIN=122\tFID=1\tRETRY=1\tOVERWRITE=1`
+    //     // const cmd = "C:123:ENROLL_MF PIN=113\tRETRY=0"
+    //     const base64img = fs.readFileSync('./sample-faceface.jpeg', {encoding: 'base64'});
+    //     //update photo
+    //     let cmd = `C:${122}:DATA UPDATE USERINFO PIN=${"112"}\tName=${"Tuyen Tran Trung"}\tPri=${0}\tCard=12345678\n`
+    //     cmd += `C:${123}:DATA UPDATE BIOPHOTO PIN=112\tType=2 Size=${base64img.length}\tContent=${base64img}\tFormat=0`
+    //     // const cmd = "OK"
+    //     return res.send(cmd);
+    // }
+    // else {
+    //     logger.info('-------------sendNewcmd-----------');
+
+    //     // \tPasswd=${XXX}${HT}Card=${XXX}${HT}Grp=${XXX}${HT}TZ=${XXX}${HT}Verify=${XXX}${HT}ViceCard=${XXX}`
+
+    //     return res.send("OK")
+    // }
 });
 
 router.post('/devicecmd', (req, res) => {
@@ -127,16 +147,17 @@ router.post
     switch (table) {
         case "ATTPHOTO":
             // console.log(req.body)
-            const data = req.body.split("CMD=uploadphoto\0");
-            logger.info(data.length);
-            if(data.length > 1){
-                const buff = Buffer.from(data[1].trim(), 'binary');
+            // const data = req.body.split("CMD=uploadphoto\0");
 
-                fs.writeFile(`./${SN}-${moment().format('YYYY-MM-DD')}.jpeg`, data[1], (err) => {
-                    if(err) console.log(err);
-                    else console.log("success");
-                })
-            }
+            // logger.info(data.length);
+            // if(data.length > 1){
+            //     const buff = Buffer.from(data[1].trim(), 'binary');
+
+            //     fs.writeFile(`./${SN}-${moment().format('YYYY-MM-DD')}.jpeg`, data[1], (err) => {
+            //         if(err) console.log(err);
+            //         else console.log("success");
+            //     })
+            // }
             // console.log(data)
             // data.forEach(element => {
             //    logger.info(element);
@@ -151,6 +172,13 @@ router.post
 
     }
 
+    return res.send("OK")
+});
+
+router.post('/registry', (req, res) => {
+   logger.info('registry');
+    logger.info(JSON.stringify(req.query, null, 2));
+    logger.info(JSON.stringify(req.body, null, 2));
     return res.send("OK")
 });
 

@@ -3,7 +3,8 @@ const moment = require('moment-timezone');
 const Device = require('../models/device.model');
 const History = require('../models/history.model');
 const ApiError = require('../utils/ApiError');
-
+const fs = require('fs');
+global.commands = new Map();
 
 const queryDevices = async () => {
 
@@ -38,7 +39,16 @@ const createDeviceLog = async (SN, data) => {
   return history
 };
 
+const updateUser = async (SN, data) => {
+  data.picture = data.picture.replace("data:image/jpeg;base64,", "")
+  let cmd = `C:${122}:DATA UPDATE USERINFO PIN=${data.id}\tName=${data.name}\tPri=${0}\tCard=\n`
+  cmd += `C:${123}:DATA UPDATE BIOPHOTO PIN=${data.id}\tType=2 Size=${data.picture.length}\tContent=${data.picture}\tFormat=0`
+  global.commands.set(SN, cmd);
+  return cmd;
+}
+
 module.exports = {
   queryDevices,
-  createDeviceLog
+  createDeviceLog,
+  updateUser
 };
